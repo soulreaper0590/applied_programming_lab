@@ -11,9 +11,9 @@ def calcnu(x,xo,eps,model):
     xi = []
     A = 0
     B = 0
-    for j in x:
-        if(j>xo):
-            xi.append(j)
+    jj = where(x>i)
+    xi = x[jj]
+    # xi.append(j)
     jxi = spc.jv(1,xi) + eps
     fxi = zeros((len(xi),2))
     fx2 = zeros((len(xi),2))
@@ -24,11 +24,8 @@ def calcnu(x,xo,eps,model):
         A,B = lstsq(fxi,jxi)[0]
     if(model=='c'):
         #model c should be coded here
-        k=0
-        for i in xi:
-            fx2[k:,0] = cos(i)*(i**-0.5)
-            fx2[k:,1] = sin(i)*(i**-0.5)
-            k = k+1
+        fx2[:,0] = cos(xi)*(xi**-0.5)
+        fx2[:,1] = sin(xi)*(xi**-0.5)
         A,B = lstsq(fx2,jxi)[0]
     #A,B = lstsq(fxi,jxi)[0]
     phi = arctan(-A/B)
@@ -48,18 +45,17 @@ arraynu1 = []
 arraynu2 = []
 for i in xo:
     xi = []
-    for j in x:
-        if(j>i):
-            xi.append(j)
+    jj = where(x>i)[0]
+    xi = x[jj]
+    print (len(xi))
     fxi = zeros((len(xi),2))
     fxi[:,0] = cos(xi)
     fxi[:,1] = sin(xi)
-    fx2 = zeros((len(xi),2))
-    k=0
-    for p in xi:
-        fx2[k:,0] = cos(p)*(p**-0.5)
-        fx2[k:,1] = sin(p)*(p**-0.5)
-        k = k+1
+    fx2 = zeros((2,len(xi)))
+    fx2[0,:] = cos(xi)*(xi**-.5)
+    fx2[1,:] = sin(xi)*(xi**-.5)
+    fx2 = fx2.transpose()
+    print fx2
     jxi = spc.jv(1,xi)
     A,B = lstsq(fxi,jxi)[0]
     phi = arctan(-A/B)
